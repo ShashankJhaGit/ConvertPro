@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConvertPro - Premium Unit Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --primary-color: #4299e1;
+            --weight-color: #48bb78;
+            --length-color: #4299e1;
+            --volume-color: #9f7aea;
+            --toggle-bg: #e2e8f0;
+            --toggle-thumb: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --toggle-bg: #4a5568;
+            --toggle-thumb: #2d3748;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 40px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff8c00, #ff6b35);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: -5px;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--toggle-bg);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: var(--toggle-thumb);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] .toggle-thumb {
+            transform: translateX(30px);
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .weight-icon { background: var(--weight-color); }
+        .length-icon { background: var(--length-color); }
+        .volume-icon { background: var(--volume-color); }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        .converter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .converter-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--bg-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .converter-item:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .converter-item:hover .arrow {
+            color: white;
+        }
+
+        .arrow {
+            font-size: 18px;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .quick-access {
+            margin: 60px 0;
+            text-align: center;
+        }
+
+        .quick-access h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: var(--text-primary);
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .quick-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .quick-item:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .converter-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+        }
+
+        .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .result {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .theme-toggle {
+                position: static;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="theme-toggle">
+                <span>🌙</span>
+                <div class="toggle-switch" onclick="toggleTheme()">
+                    <div class="toggle-thumb"></div>
+                </div>
+                <span>☀️</span>
+            </div>
+            
+            <div class="logo">
+                <div class="logo-icon">📏</div>
+                <div>
+                    <div class="logo-text">ConvertPro</div>
+                    <div class="tagline">Premium Unit Converter</div>
+                </div>
+            </div>
+            
+            <h1>Premium Unit Converter</h1>
+            <p class="subtitle">
+                Accurate, instant conversions for weight, length, and volume measurements. Built with precision for professionals and everyday use.
+            </p>
+        </header>
+
+        <div class="sections">
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon weight-icon">⚖️</div>
+                    <div>
+                        <div class="section-title">Weight</div>
+                    </div>
+                </div>
+                <p class="section-description">
+                    Convert between pounds, kilograms, grams, and ounces
+                </p>
+                <div class="converter-list">
+                    <div class="converter-item" onclick="openConverter('Pounds to Kilograms', 'pounds', 'kilograms', 0.453592)">
+                        <span>Pounds to Kilograms</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Grams to Pounds', 'grams', 'pounds', 0.00220462)">
+                        <span>Grams to Pounds</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Grams to Ounces', 'grams', 'ounces', 0.035274)">
+                        <span>Grams to Ounces</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Ounces to Pounds', 'ounces', 'pounds', 0.0625)">
+                        <span>Ounces to Pounds</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Ounces to Kilograms', 'ounces', 'kilograms', 0.0283495)">
+                        <span>Ounces to Kilograms</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon length-icon">📏</div>
+                    <div>
+                        <div class="section-title">Length</div>
+                    </div>
+                </div>
+                <p class="section-description">
+                    Convert between feet, meters, miles, and other length units
+                </p>
+                <div class="converter-list">
+                    <div class="converter-item" onclick="openConverter('Feet to Meters', 'feet', 'meters', 0.3048)">
+                        <span>Feet to Meters</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Feet to Kilometers', 'feet', 'kilometers', 0.0003048)">
+                        <span>Feet to Kilometers</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Feet to Miles', 'feet', 'miles', 0.000189394)">
+                        <span>Feet to Miles</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Feet to Yards', 'feet', 'yards', 0.333333)">
+                        <span>Feet to Yards</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Yards to Miles', 'yards', 'miles', 0.000568182)">
+                        <span>Yards to Miles</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Meters to Miles', 'meters', 'miles', 0.000621371)">
+                        <span>Meters to Miles</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Yards to Kilometers', 'yards', 'kilometers', 0.0009144)">
+                        <span>Yards to Kilometers</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Meters to Kilometers', 'meters', 'kilometers', 0.001)">
+                        <span>Meters to Kilometers</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Yards to Meters', 'yards', 'meters', 0.9144)">
+                        <span>Yards to Meters</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Inches to Centimeters', 'inches', 'centimeters', 2.54)">
+                        <span>Inches to Centimeters</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Inches to Millimeters', 'inches', 'millimeters', 25.4)">
+                        <span>Inches to Millimeters</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Yards to Centimeters', 'yards', 'centimeters', 91.44)">
+                        <span>Yards to Centimeters</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Yards to Millimeters', 'yards', 'millimeters', 914.4)">
+                        <span>Yards to Millimeters</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Meters to Centimeters', 'meters', 'centimeters', 100)">
+                        <span>Meters to Centimeters</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Meters to Millimeters', 'meters', 'millimeters', 1000)">
+                        <span>Meters to Millimeters</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Millimeters to Miles', 'millimeters', 'miles', 0.000000621371)">
+                        <span>Millimeters to Miles</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Millimeters to Kilometers', 'millimeters', 'kilometers', 0.000001)">
+                        <span>Millimeters to Kilometers</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <div class="section-icon volume-icon">🥤</div>
+                    <div>
+                        <div class="section-title">Volume (Liquid)</div>
+                    </div>
+                </div>
+                <p class="section-description">
+                    Convert between cups, pints, quarts, gallons, and fluid ounces
+                </p>
+                <div class="converter-list">
+                    <div class="converter-item" onclick="openConverter('Cups to Pints', 'cups', 'pints', 0.5)">
+                        <span>Cups to Pints</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Cups to Quarts', 'cups', 'quarts', 0.25)">
+                        <span>Cups to Quarts</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Cups to Gallons', 'cups', 'gallons', 0.0625)">
+                        <span>Cups to Gallons</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Cups to Fluid Ounces', 'cups', 'fluid ounces', 8)">
+                        <span>Cups to Fluid Ounces</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Quarts to Fluid Ounces', 'quarts', 'fluid ounces', 32)">
+                        <span>Quarts to Fluid Ounces</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Pints to Fluid Ounces', 'pints', 'fluid ounces', 16)">
+                        <span>Pints to Fluid Ounces</span>
+                        <span class="arrow">→</span>
+                    </div>
+                    <div class="converter-item" onclick="openConverter('Gallons to Fluid Ounces', 'gallons', 'fluid ounces', 128)">
+                        <span>Gallons to Fluid Ounces</span>
+                        <span class="arrow">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-access">
+            <h2>Quick Access Converters</h2>
+            <div class="quick-grid">
+                <div class="quick-item" onclick="openConverter('Pounds to Kilograms', 'pounds', 'kilograms', 0.453592)">
+                    Pounds to Kilograms
+                </div>
+                <div class="quick-item" onclick="openConverter('Grams to Pounds', 'grams', 'pounds', 0.00220462)">
+                    Grams to Pounds
+                </div>
+                <div class="quick-item" onclick="openConverter('Grams to Ounces', 'grams', 'ounces', 0.035274)">
+                    Grams to Ounces
+                </div>
+                <div class="quick-item" onclick="openConverter('Ounces to Pounds', 'ounces', 'pounds', 0.0625)">
+                    Ounces to Pounds
+                </div>
+                <div class="quick-item" onclick="openConverter('Ounces to Kilograms', 'ounces', 'kilograms', 0.0283495)">
+                    Ounces to Kilograms
+                </div>
+                <div class="quick-item" onclick="openConverter('Feet to Meters', 'feet', 'meters', 0.3048)">
+                    Feet to Meters
+                </div>
+                <div class="quick-item" onclick="openConverter('Feet to Kilometers', 'feet', 'kilometers', 0.0003048)">
+                    Feet to Kilometers
+                </div>
+                <div class="quick-item" onclick="openConverter('Feet to Miles', 'feet', 'miles', 0.000189394)">
+                    Feet to Miles
+                </div>
+                <div class="quick-item" onclick="openConverter('Feet to Yards', 'feet', 'yards', 0.333333)">
+                    Feet to Yards
+                </div>
+                <div class="quick-item" onclick="openConverter('Yards to Miles', 'yards', 'miles', 0.000568182)">
+                    Yards to Miles
+                </div>
+                <div class="quick-item" onclick="openConverter('Meters to Miles', 'meters', 'miles', 0.000621371)">
+                    Meters to Miles
+                </div>
+                <div class="quick-item" onclick="openConverter('Yards to Kilometers', 'yards', 'kilometers', 0.0009144)">
+                    Yards to Kilometers
+                </div>
+                <div class="quick-item" onclick="openConverter('Meters to Kilometers', 'meters', 'kilometers', 0.001)">
+                    Meters to Kilometers
+                </div>
+                <div class="quick-item" onclick="openConverter('Yards to Meters', 'yards', 'meters', 0.9144)">
+                    Yards to Meters
+                </div>
+                <div class="quick-item" onclick="openConverter('Inches to Centimeters', 'inches', 'centimeters', 2.54)">
+                    Inches to Centimeters
+                </div>
+                <div class="quick-item" onclick="openConverter('Inches to Millimeters', 'inches', 'millimeters', 25.4)">
+                    Inches to Millimeters
+                </div>
+                <div class="quick-item" onclick="openConverter('Yards to Centimeters', 'yards', 'centimeters', 91.44)">
+                    Yards to Centimeters
+                </div>
+                <div class="quick-item" onclick="openConverter('Yards to Millimeters', 'yards', 'millimeters', 914.4)">
+                    Yards to Millimeters
+                </div>
+                <div class="quick-item" onclick="openConverter('Meters to Centimeters', 'meters', 'centimeters', 100)">
+                    Meters to Centimeters
+                </div>
+                <div class="quick-item" onclick="openConverter('Meters to Millimeters', 'meters', 'millimeters', 1000)">
+                    Meters to Millimeters
+                </div>
+                <div class="quick-item" onclick="openConverter('Millimeters to Miles', 'millimeters', 'miles', 0.000000621371)">
+                    Millimeters to Miles
+                </div>
+                <div class="quick-item" onclick="openConverter('Millimeters to Kilometers', 'millimeters', 'kilometers', 0.000001)">
+                    Millimeters to Kilometers
+                </div>
+                <div class="quick-item" onclick="openConverter('Cups to Pints', 'cups', 'pints', 0.5)">
+                    Cups to Pints
+                </div>
+                <div class="quick-item" onclick="openConverter('Cups to Quarts', 'cups', 'quarts', 0.25)">
+                    Cups to Quarts
+                </div>
+                <div class="quick-item" onclick="openConverter('Cups to Gallons', 'cups', 'gallons', 0.0625)">
+                    Cups to Gallons
+                </div>
+                <div class="quick-item" onclick="openConverter('Cups to Fluid Ounces', 'cups', 'fluid ounces', 8)">
+                    Cups to Fluid Ounces
+                </div>
+                <div class="quick-item" onclick="openConverter('Quarts to Fluid Ounces', 'quarts', 'fluid ounces', 32)">
+                    Quarts to Fluid Ounces
+                </div>
+                <div class="quick-item" onclick="openConverter('Pints to Fluid Ounces', 'pints', 'fluid ounces', 16)">
+                    Pints to Fluid Ounces
+                </div>
+                <div class="quick-item" onclick="openConverter('Gallons to Fluid Ounces', 'gallons', 'fluid ounces', 128)">
+                    Gallons to Fluid Ounces
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="converter-modal" id="converterModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeConverter()">&times;</button>
+            <h3 class="modal-title" id="modalTitle"></h3>
+            <div class="input-group">
+                <label for="inputValue" id="inputLabel"></label>
+                <input type="number" id="inputValue" placeholder="Enter value" oninput="convert()">
+            </div>
+            <div class="result" id="result">Enter a value to see the conversion</div>
+        </div>
+    </div>
+
+    <script>
+        let currentConverter = null;
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+        }
+
+        function openConverter(title, fromUnit, toUnit, conversionRate) {
+            currentConverter = {
+                title: title,
+                fromUnit: fromUnit,
+                toUnit: toUnit,
+                rate: conversionRate
+            };
+
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('inputLabel').textContent = `Enter ${fromUnit}:`;
+            document.getElementById('inputValue').value = '';
+            document.getElementById('result').textContent = 'Enter a value to see the conversion';
+            
+            document.getElementById('converterModal').style.display = 'flex';
+            document.getElementById('inputValue').focus();
+        }
+
+        function closeConverter() {
+            document.getElementById('converterModal').style.display = 'none';
+            currentConverter = null;
+        }
+
+        function convert() {
+            if (!currentConverter) return;
+
+            const inputValue = parseFloat(document.getElementById('inputValue').value);
+            const resultDiv = document.getElementById('result');
+
+            if (isNaN(inputValue) || inputValue === '') {
+                resultDiv.textContent = 'Enter a value to see the conversion';
+                return;
+            }
+
+            const convertedValue = inputValue * currentConverter.rate;
+            const formattedValue = convertedValue.toLocaleString('en-US', {
+                maximumFractionDigits: 8,
+                minimumFractionDigits: 0
+            });
+
+            resultDiv.textContent = `${inputValue} ${currentConverter.fromUnit} = ${formattedValue} ${currentConverter.toUnit}`;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('converterModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeConverter();
+            }
+        });
+
+        // Handle Enter key in input
+        document.getElementById('inputValue').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convert();
+            }
+        });
+    </script>
+</body>
+</html>
